@@ -24,75 +24,78 @@ public class ServiceTestBlocMock {
     private BlocRepository blocRepository;
 
     @InjectMocks
-    private BlocService blocService; // Assurez-vous d'avoir une classe BlocService pour gérer la logique métier.
+    private BlocService blocService;
 
     private Bloc bloc;
 
     @BeforeEach
     void setUp() {
-        bloc = new Bloc();
-        bloc.setName("Bloc Test");
-        bloc.setDescription("Description du Bloc Test");
+        bloc = Bloc.builder()
+                .nomBloc("Bloc Test")
+                .capaciteBloc(50L)
+                .build();
     }
 
     @Test
     void testAddBloc() {
-        // Simulation du comportement du repository pour l'ajout d'un bloc
+        // Mock du comportement du repository
         when(blocRepository.save(bloc)).thenReturn(bloc);
 
-        // Appel de la méthode à tester
+        // Appel de la méthode de service
         Bloc savedBloc = blocService.addBloc(bloc);
 
         // Vérifications
         assertNotNull(savedBloc, "Le bloc sauvegardé ne doit pas être nul.");
-        assertEquals("Bloc Test", savedBloc.getName(), "Le nom du bloc doit correspondre.");
-        assertEquals("Description du Bloc Test", savedBloc.getDescription(), "La description doit correspondre.");
+        assertEquals("Bloc Test", savedBloc.getNomBloc(), "Le nom du bloc doit correspondre.");
+        assertEquals(50L, savedBloc.getCapaciteBloc(), "La capacité doit correspondre.");
 
-        // Vérifier que le repository a été appelé une fois avec le bon objet
+        // Vérification des appels au mock
         verify(blocRepository, times(1)).save(bloc);
     }
 
     @Test
-    void testReadBloc() {
-        // Simulation du comportement du repository pour la lecture
+    void testGetBlocById() {
+        // Mock du comportement du repository
         when(blocRepository.findById(1L)).thenReturn(Optional.of(bloc));
 
-        // Appel de la méthode à tester
+        // Appel de la méthode de service
         Bloc foundBloc = blocService.getBlocById(1L);
 
         // Vérifications
         assertNotNull(foundBloc, "Le bloc trouvé ne doit pas être nul.");
-        assertEquals("Bloc Test", foundBloc.getName(), "Le nom du bloc doit correspondre.");
+        assertEquals("Bloc Test", foundBloc.getNomBloc(), "Le nom doit correspondre.");
+        assertEquals(50L, foundBloc.getCapaciteBloc(), "La capacité doit correspondre.");
 
-        // Vérifier que le repository a été appelé une fois
+        // Vérification des appels au mock
         verify(blocRepository, times(1)).findById(1L);
     }
 
     @Test
     void testUpdateBloc() {
-        // Simulation du comportement pour la mise à jour
+        // Préparer les données de mise à jour
+        bloc.setNomBloc("Bloc Updated");
+        bloc.setCapaciteBloc(100L);
+
+        // Mock du comportement du repository
         when(blocRepository.save(bloc)).thenReturn(bloc);
 
-        bloc.setName("Updated Bloc");
-        bloc.setDescription("Updated Description");
-
-        // Appel de la méthode à tester
+        // Appel de la méthode de service
         Bloc updatedBloc = blocService.updateBloc(bloc);
 
         // Vérifications
-        assertEquals("Updated Bloc", updatedBloc.getName(), "Le nom mis à jour doit correspondre.");
-        assertEquals("Updated Description", updatedBloc.getDescription(), "La description mise à jour doit correspondre.");
+        assertEquals("Bloc Updated", updatedBloc.getNomBloc(), "Le nom mis à jour doit correspondre.");
+        assertEquals(100L, updatedBloc.getCapaciteBloc(), "La capacité mise à jour doit correspondre.");
 
-        // Vérifier que le repository a été appelé une fois avec le bon objet
+        // Vérification des appels au mock
         verify(blocRepository, times(1)).save(bloc);
     }
 
     @Test
     void testDeleteBloc() {
-        // Appel de la méthode de suppression
+        // Appel de la méthode de service
         blocService.deleteBloc(1L);
 
-        // Vérifier que le repository a été appelé une fois pour la suppression
+        // Vérification que la méthode du repository a été appelée
         verify(blocRepository, times(1)).deleteById(1L);
     }
 }

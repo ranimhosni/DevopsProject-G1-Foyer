@@ -1,66 +1,84 @@
 package tn.esprit.tpfoyer17;
-import tn.esprit.tpfoyer17.entities.Bloc;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import tn.esprit.tpfoyer17.entities.Bloc;
+import tn.esprit.tpfoyer17.entities.Foyer;
 import tn.esprit.tpfoyer17.repositories.BlocRepository;
+import tn.esprit.tpfoyer17.repositories.FoyerRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @SpringBootTest
-public class ServiceTestBloc {
+class BlocServiceTest {
 
     @Autowired
     private BlocRepository blocRepository;
 
+    @Autowired
+    private FoyerRepository foyerRepository;
+
     private Bloc bloc;
+    private Foyer foyer;
 
     @BeforeEach
     void setUp() {
+        // Create and save a Foyer
+        foyer = new Foyer();
+        foyer.setNomFoyer("Foyer Test");
+        foyer.setCapaciteFoyer(200L);
+        foyerRepository.save(foyer);
+
+        // Create a Bloc with the Foyer
         bloc = new Bloc();
-        Bloc.setName("Bloc Test");
-        bloc.setDescription("Description du Bloc Test");
+        bloc.setNomBloc("Bloc Test");
+        bloc.setCapaciteBloc(100L);
+        bloc.setFoyer(foyer);
     }
 
     @Test
-    void testAddBloc() {
-        // Ajouter un bloc dans le repository
-        log.info("Ajout d'un bloc : {}", bloc);
+    void testCreateBloc() {
         Bloc savedBloc = blocRepository.save(bloc);
 
-        // Vérifications
-        assertNotNull(savedBloc.getId(), "L'ID du bloc ne doit pas être nul après sauvegarde.");
-        assertEquals("Bloc Test", savedBloc.getName(), "Le nom du bloc doit correspondre.");
-        assertEquals("Description du Bloc Test", savedBloc.getDescription(), "La description doit correspondre.");
+        assertNotNull(savedBloc.getIdBloc());
+        assertEquals("Bloc Test", savedBloc.getNomBloc());
+        assertEquals(100L, savedBloc.getCapaciteBloc());
+        assertEquals(foyer.getIdFoyer(), savedBloc.getFoyer().getIdFoyer());
     }
 
     @Test
     void testReadBloc() {
-        // Sauvegarder un bloc et le lire
         Bloc savedBloc = blocRepository.save(bloc);
-        Bloc foundBloc = blocRepository.findById(savedBloc.getId()).orElse(null);
+        Bloc foundBloc = blocRepository.findById(savedBloc.getIdBloc()).orElse(null);
 
-        // Vérifications
-        assertNotNull(foundBloc, "Le bloc trouvé ne doit pas être nul.");
-        assertEquals(savedBloc.getId(), foundBloc.getId(), "L'ID du bloc doit correspondre.");
-        assertEquals("Bloc Test", foundBloc.getName(), "Le nom du bloc doit correspondre.");
+        assertNotNull(foundBloc);
+        assertEquals(savedBloc.getIdBloc(), foundBloc.getIdBloc());
+        assertEquals("Bloc Test", foundBloc.getNomBloc());
     }
 
     @Test
     void testUpdateBloc() {
-        // Sauvegarder et mettre à jour un bloc
         Bloc savedBloc = blocRepository.save(bloc);
-        savedBloc.setName("Updated Bloc");
-        savedBloc.setDescription("Updated Description");
+        savedBloc.setNomBloc("Updated Bloc");
+        savedBloc.setCapaciteBloc(150L);
 
         Bloc updatedBloc = blocRepository.save(savedBloc);
 
-        // Vérifications
-        assertEquals("Updated Bloc", updatedBloc.getName(), "Le nom mis à jour doit correspond");
+        assertEquals("Updated Bloc", updatedBloc.getNomBloc());
+        assertEquals(150L, updatedBloc.getCapaciteBloc());
+    }
+
+    @Test
+    void testDeleteBloc() {
+        Bloc savedBloc = blocRepository.save(bloc);
+        Long blocId = savedBloc.getIdBloc();
+
+        blocRepository.deleteById(blocId);
+
+        Bloc deletedBloc = blocRepository.findById(blocId).orElse(null);
+
+        assertNull(deletedBloc);
     }
 }
