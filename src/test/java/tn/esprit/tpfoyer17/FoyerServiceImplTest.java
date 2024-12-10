@@ -24,6 +24,7 @@ class FoyerRepositoryTest {
         foyer.setCapaciteFoyer(200L);
     }
 
+
     @Test
     void testCreateFoyer() {
         Foyer savedFoyer = foyerRepository.save(foyer);
