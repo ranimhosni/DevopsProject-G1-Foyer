@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -10,7 +11,7 @@
     </parent>
     <groupId>tn.esprit</groupId>
     <artifactId>tpFoyer-17</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3-RELEASE</version>
     <name>tpFoyer-17</name>
     <description>tpFoyer-17</description>
     <properties>
@@ -73,6 +74,18 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>devopsimage01</finalName>
     </build>
+
+    <distributionManagement>
+
+        <repository>
+            <id>deploymentRepo</id>
+            <name>Nexus Repository </name>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
+        </repository>
+
+
+    </distributionManagement>
 
 </project>
