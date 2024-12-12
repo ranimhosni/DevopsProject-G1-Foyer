@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-class TestFoyerServiceImplMock {
+ class TestFoyerServiceImplMock {
 
     @Mock
     private IFoyerService foyerService;
