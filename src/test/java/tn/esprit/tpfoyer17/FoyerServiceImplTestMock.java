@@ -15,17 +15,17 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class FoyerServiceImplTestMock {
+class TestFoyerServiceImplMock {
 
     @Mock
     private IFoyerService foyerService;
 
     @InjectMocks
-    private FoyerServiceImplTestMock foyerServiceImplTestMock;
+    private TestFoyerServiceImplMock foyerServiceImplTestMock;
 
     @Test
     @Order(1)
-    public void testAddFoyer() {
+    void testAddFoyer() {
         // Créer un nouveau foyer
         Foyer foyer = Foyer.builder()
                 .nomFoyer("Foyer Central")
@@ -49,7 +49,7 @@ public class FoyerServiceImplTestMock {
 
         // Assertions pour vérifier que le foyer est correctement sauvegardé
         log.info("Vérification des assertions pour le foyer sauvegardé");
-        Assertions.assertNotNull(result.getIdFoyer(), "L'ID du foyer ne doit pas être nul");
+        Assertions.assertTrue(result.getIdFoyer() >0, "L'ID du foyer ne doit pas être nul");
         Assertions.assertEquals("Foyer Central", result.getNomFoyer());
         Assertions.assertEquals(100L, result.getCapaciteFoyer());
 

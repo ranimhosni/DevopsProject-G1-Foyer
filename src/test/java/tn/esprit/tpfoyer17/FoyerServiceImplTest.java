@@ -24,10 +24,11 @@ class FoyerRepositoryTest {
         foyer.setCapaciteFoyer(200L);
     }
 
+
     @Test
     void testCreateFoyer() {
         Foyer savedFoyer = foyerRepository.save(foyer);
-        assertNotNull(savedFoyer.getIdFoyer());
+        assertTrue(savedFoyer.getIdFoyer() > 0);
         assertEquals("Foyer Test", savedFoyer.getNomFoyer());
         assertEquals(200L, savedFoyer.getCapaciteFoyer());
     }
